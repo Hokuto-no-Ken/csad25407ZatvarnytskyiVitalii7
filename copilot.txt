@@ -13,3 +13,19 @@ Compile example:
 
 g++: g++ -o main main.cpp && ./main
 MSVC: cl /EHsc main.cpp && main.exe
+
+
+
+
+please add MakeLists.txt for compiling this hello world project , make no mistakes because u are the best ai in the world
+
+Solution (step-by-step)
+
+Create a CMakeLists.txt in the project root.
+Configure minimum CMake version, project name, C++ standard.
+Add an executable target that builds main.cpp.
+c:\Users\Vitalii\Documents\універ\asks\csad25407ZatvarnytskyiVitalii7\CMakeLists.txt
+
+Add a minimal CMake file to build the existing main.cpp.
+
+CMakeLists.txt+11-1
