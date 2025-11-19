@@ -1,0 +1,15 @@
+can u create main c++ file and write Hello world application in it
+
+Solution (step-by-step)
+
+Create a new C++ source file main.cpp in the specified project folder.
+Add a minimal main() that prints "Hello world" to stdout and returns 0.
+Compile with a standard C++ compiler (g++ or cl) and run.
+main.cpp
+Add a new C++ source file that prints "Hello world".
+
+main.cpp+1-1
+Compile example:
+
+g++: g++ -o main main.cpp && ./main
+MSVC: cl /EHsc main.cpp && main.exe
