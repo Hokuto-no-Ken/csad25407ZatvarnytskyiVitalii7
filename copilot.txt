@@ -29,3 +29,71 @@ c:\Users\Vitalii\Documents\універ\asks\csad25407ZatvarnytskyiVitalii7\CMak
 Add a minimal CMake file to build the existing main.cpp.
 
 CMakeLists.txt+11-1
+
+
+
+"I need to set up a C++ project for unit testing using Google Test. Please perform the following steps, providing the code for each file or update:
+
+Create the math_operations module:
+
+In the project root, create the file math_operations.h. Add the function declaration int add(int a, int b); to it.
+
+In the project root, create the file math_operations.cpp. Add the implementation for the function int add(int a, int b); that returns the sum of the arguments.
+
+Set up Testing:
+
+Create the directory tests/.
+
+Inside the tests/ directory, create the file unit_tests.cpp.
+
+In unit_tests.cpp, write the code for unit tests of the add function using Google Test. Ensure the necessary headers are included. Add at least two test cases (TEST).
+
+Update CMakeLists.txt (located in the project root):
+
+Update CMakeLists.txt to include Google Test support. Use FetchContent or another modern method to add Google Test as a dependency.
+
+Add instructions to create a test executable named run_tests from the source files math_operations.cpp and tests/unit_tests.cpp.
+
+Add an add_test command to run the newly created test executable."
+
+
+
+
+
+
+Solution (step-by-step)
+
+Add a small math_operations module with a header and implementation.
+Add Google Test based unit tests under tests/unit_tests.cpp with at least two TEST cases.
+Update CMakeLists.txt to fetch and build Google Test, add a test executable run_tests, and register the tests with CTest.
+Build with CMake, then run tests via ctest or the run_tests binary.
+Changes by file
+
+c:\Users\Vitalii\Documents\універ\asks\csad25407ZatvarnytskyiVitalii7\math_operations.h
+
+Add the declaration for int add(int a, int b).
+
+math_operations.h
+c:\Users\Vitalii\Documents\універ\asks\csad25407ZatvarnytskyiVitalii7\math_operations.cpp
+
+Add the implementation of add.
+
+math_operations.cpp
+c:\Users\Vitalii\Documents\універ\asks\csad25407ZatvarnytskyiVitalii7\tests\unit_tests.cpp
+
+Create tests directory and add unit tests using Google Test. Two simple test cases included.
+
+unit_tests.cpp
+CMakeLists.txt
+
+Update CMake to fetch Google Test, add the run_tests executable that builds math_operations.cpp and tests/unit_tests.cpp, link GTest, enable testing, and register the test.
+
+CMakeLists.txt+26-1
+Notes to build and run tests
+
+From the project root:
+mkdir build && cd build
+cmake ..
+cmake --build .
+ctest --verbose
+Or run the test binary directly: ./run_tests (or run_tests.exe on Windows).
