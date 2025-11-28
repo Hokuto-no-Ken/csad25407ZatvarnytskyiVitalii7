@@ -146,3 +146,67 @@ Would you like me to:
 Overwrite ci.sh and/or ci.bat with the raw versions, or
 Add a Windows runner to the CI Action and run the batch script there, or
 Make any other changes (e.g., add --clean option)?
+
+
+
+створи юмл файл який виконує оце (згенеруй сам файл без лишніх пояснень)
+генерації робочого процесу (workflow) з наступними вимогами:
+○ Trigger: Запускати акцію при push або pull request у гілку, що містить в назві develop чи master .
+○ Job: Створити одну Job (наприклад, cross_build).
+○ Strategy: Використати матрицю (strategy: matrix) для запуску білду на трьох ОС:
+■ runs-on: ubuntu-latest (Linux)
+■ runs-on: windows-latest (Windows)
+■ runs-on: macos-latest (macOS)
+○ Steps: Кожен білд повинен включати кроки:
+■ Checkout коду (actions/checkout@v4).
+■ Встановлення CMake (якщо потрібно).
+■ Запуск команд конфігурації та білдування (запуск скрипту з Етапу 3).
+■ Deploy.
+
+
+
+
+
+
+Solution (step-by-step)
+c:\Users\Vitalii\Documents\універ\asks\csad25407ZatvarnytskyiVitalii7\.github\workflow\
+
+
+name: CI
+
+on:
+  push:
+    branches:
+      - '*develop*'
+      - '*master*'
+  pull_request:
+    branches:
+      - '*develop*'
+      - '*master*'
+
+jobs:
+  cross_build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install CMake
+        uses: kitware/cmake-action@v2
+        with:
+          cmake-version: 'latest'
+      
+      - name: Configure
+        run: cmake -B build -S .
+      
+      - name: Build
+        run: cmake --build build
+      
+      - name: Deploy
+        run: |
+          echo "Deploying build artifacts..."
+          # Add your deploy commands here
