@@ -210,3 +210,68 @@ jobs:
         run: |
           echo "Deploying build artifacts..."
           # Add your deploy commands here
+
+
+
+
+          привіт запушив і на гітлабі впав білд з такою помилкою 1s
+Current runner version: '2.329.0'
+Runner Image Provisioner
+Operating System
+Runner Image
+GITHUB_TOKEN Permissions
+Secret source: Actions
+Prepare workflow directory
+Prepare all required actions
+Getting action download info
+Error: Unable to resolve action kitware/cmake-action, repository not found
+
+
+I'll scan the repository for CI configs and any reference to kitware/cmake-action to identify where the action is used.
+
+Відкрию  .github/workflows/ci.yml, щоб переглянути, як використовується kitware/cmake-action.
+
+Read ci.yml
+
+Creating GitLab CI configuration...
+Я спланую кроки: додам TODO, потім створю  .gitlab-ci.yml щоб збілдити проект в GitLab (Ubuntu образ із CMake).
+
+Created 3 todos
+
+.gitlab-ci.yml+18-1
+Updating todo list statuses
+Оновлю статус кроків: файл .gitlab-ci.yml додано, GitHub workflow перевірено. Наступне — пояснення варіантів виправлення.
+
+Completed: Add CI for GitLab (1/3)
+
+Evaluating formatting and next steps
+Коротко — що я зробив і наступні кроки
+
+Додав:  .gitlab-ci.yml — простий GitLab CI pipeline, який встановлює CMake на образі ubuntu:22.04 і виконує збірку/тести.
+Перевірив:  .github/workflows/ci.yml — у ньому використовується uses: kitware/cmake-action@v2.
+Причина помилки і варіанти виправлення
+
+Чому сталося: GitHub Actions workflow (файли в workflows) не працюють у GitLab CI. Повідомлення Unable to resolve action kitware/cmake-action, repository not found з’являється, бо GitLab runner не тягне GitHub Actions Marketplace-реквізити — вони специфічні для GitHub Actions. Тому GitLab CI не може "resolve" GitHub action.
+Варіанти виправлення:
+A) Залишити CI в GitLab — використовувати  .gitlab-ci.yml (я додав базовий варіант). Працює на GitLab runners або Docker-executor.
+B) Якщо хочете використовувати GitHub Actions — перемістити/запускати pipeline в GitHub (не в GitLab) або налаштувати середовище, яке підтримує виконання GitHub Actions (складніше).
+C) Якщо у вас спеціальна потреба запускати саме kitware/cmake-action в середовищі, яке підтримує GitHub Actions — перевірити доступ до інтернету та правильність тегу (@v2/@v3) або використовувати образ Docker з CMake замість action.
+Що саме я додав
+
+Файл:  .gitlab-ci.yml (в корені репозиторію) з таким вмістом:
+Використовує ubuntu:22.04.
+Встановлює cmake і build-essential.
+Виконує cmake -B build -S . і cmake --build build.
+Зберігає артефакти build/ на тиждень.
+Як запустити / перевірити локально або на GitLab
+
+Щоб запушити зміни і тригернути GitLab pipeline (PowerShell):
+На GitLab перевірте Jobs → pipeline для цього коміту.
+Якщо хочете — я можу:
+
+Покращити  .gitlab-ci.yml під matrix (Linux/Windows/macOS) — для Windows треба використовувати специфічні runner'и або image.
+Замінити автоматичну інсталяцію apt-get на готовий Docker image з CMake (kitware/cmake), якщо вам зручніше.
+Видалити або синхронізувати ci.yml, щоб уникнути плутанини (але це не обов'язково).
+Запитання:
+
+Підтвердіть, що ви хочете, щоби CI працював у GitLab (тоді я покращу  .gitlab-ci.yml під вашу матрицю ОС/ранери), або ви планували використовувати GitHub Actions (тоді розкажіть, де ви запускаєте pipeline).
