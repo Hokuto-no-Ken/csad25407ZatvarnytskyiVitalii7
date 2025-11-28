@@ -311,3 +311,86 @@ kitware/cmake-action@v2 зазвичай працює в GitHub Actions; якщ�
 
 Якщо пришлете лог — проаналізую і запропоную точне виправлення.
 Якщо хочете миттєво — я можу відразу замінити крок CMake в  .github/workflows/ci.yml на кроки з brew (запитаю перед патчем).
+
+
+
+
+
+
+
+зміни мені йамл аби не було то ї помилки з бібліотекою 
+
+
+Я заміню крок uses: kitware/cmake-action@v2 на OS-специфічні інструкції установки CMake для Linux/Windows/macOS. Це уникне помилки при виконанні в різних раннерах.
+
+
+on:
+  push:
+    branches:
+      - '*develop*'
+      - '*master*'
+  pull_request:
+    branches:
+      - '*develop*'
+      - '*master*'
+
+jobs:
+  cross_build:
+    name: Cross build on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install CMake (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake
+        shell: bash
+
+      - name: Install CMake (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew update
+          brew install cmake
+        shell: bash
+
+      - name: Install CMake (Windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        shell: pwsh
+
+      - name: Make Unix script executable
+        if: matrix.os != 'windows-latest'
+        run: chmod +x ci.sh
+        shell: bash
+
+      - name: Run CI script (Unix)
+        if: matrix.os != 'windows-latest'
+        run: ./ci.sh
+        shell: bash
+
+      - name: Run CI script (Windows)
+        if: matrix.os == 'windows-latest'
+        run: .\ci.bat
+        shell: pwsh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: build
+
+      - name: Deploy (placeholder)
+        run: |
+          echo "Deploy step - replace with real deployment actions"
+
+
+
+
+  

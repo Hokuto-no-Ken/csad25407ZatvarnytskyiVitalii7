@@ -12,27 +12,56 @@ on:
 
 jobs:
   cross_build:
-    runs-on: ${{ matrix.os }}
+    name: Cross build on ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-    
+    runs-on: ${{ matrix.os }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Install CMake
-        uses: kitware/cmake-action@v2
-        with:
-          cmake-version: 'latest'
-      
-      - name: Configure
-        run: cmake -B build -S .
-      
-      - name: Build
-        run: cmake --build build
-      
-      - name: Deploy
+
+      - name: Install CMake (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          echo "Deploying build artifacts..."
-          # Add your deploy commands here
+          sudo apt-get update
+          sudo apt-get install -y cmake
+        shell: bash
+
+      - name: Install CMake (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew update
+          brew install cmake
+        shell: bash
+
+      - name: Install CMake (Windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        shell: pwsh
+
+      - name: Make Unix script executable
+        if: matrix.os != 'windows-latest'
+        run: chmod +x ci.sh
+        shell: bash
+
+      - name: Run CI script (Unix)
+        if: matrix.os != 'windows-latest'
+        run: ./ci.sh
+        shell: bash
+
+      - name: Run CI script (Windows)
+        if: matrix.os == 'windows-latest'
+        run: .\ci.bat
+        shell: pwsh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: build
+
+      - name: Deploy (placeholder)
+        run: |
+          echo "Deploy step - replace with real deployment actions"
