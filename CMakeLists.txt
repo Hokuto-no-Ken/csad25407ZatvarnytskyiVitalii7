@@ -1,35 +1,35 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.10)
+if(POLICY CMP0048)
+	cmake_policy(SET CMP0048 NEW)
+endif()
+project(APKS VERSION 1.0 LANGUAGES CXX)
 
-project(HelloWorld VERSION 1.0 LANGUAGES CXX)
-
-# Use a sensible default C++ standard
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Build executable from main.cpp
-add_executable(main main.cpp)
+add_library(math_operations_lib STATIC math_operations.cpp)
+target_include_directories(math_operations_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_features(math_operations_lib PUBLIC cxx_std_17)
 
-# Fetch GoogleTest
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/refs/heads/main.zip
-)
-# Ensure consistent CRT on MSVC (optional)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+add_executable(main main.cpp)
+target_link_libraries(main PRIVATE math_operations_lib)
+
 
 enable_testing()
+include(FetchContent)
+set(FETCHCONTENT_QUIET OFF)
 
-# Build test executable from math_operations and unit tests
-add_executable(run_tests
-    math_operations.cpp
-    tests/unit_tests.cpp
+FetchContent_Declare(
+ googletest
+ GIT_REPOSITORY https://github.com/google/googletest.git
+ GIT_TAG main
 )
 
-# Link GoogleTest and threads
-find_package(Threads REQUIRED)
-target_link_libraries(run_tests PRIVATE GTest::gtest_main Threads::Threads)
+set(FETCHCONTENT_DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
 
-# Register the test with CTest
-add_test(NAME run_tests COMMAND run_tests)
+set(gtest_force_shared_crt ON CACHE BOOL "Use shared (DLL) runtime library" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(unit_tests tests/unit_tests.cpp)
+target_link_libraries(unit_tests PRIVATE math_operations_lib GTest::gtest_main)
+add_test(NAME unit_tests COMMAND unit_tests)
