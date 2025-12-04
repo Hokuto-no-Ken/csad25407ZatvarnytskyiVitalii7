@@ -7,7 +7,7 @@ end uart_tb;
 
 architecture behave of uart_tb is
   constant c_CLK_PERIOD : time := 10 ns; -- 100 MHz
-  constant c_CLKS_PER_BIT : integer := 87; -- Number of clock cycles per bit this is calculated as 10 ns / (1/115200) = 87
+  constant c_CLKS_PER_BIT : integer := 5; -- Number of clock cycles per bit this is calculated as 10 ns / (1/115200) = 87
 
   signal r_Clk : std_logic := '0';
   signal w_Tx_Serial : std_logic;
