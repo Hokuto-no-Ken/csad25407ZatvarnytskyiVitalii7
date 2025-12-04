@@ -2,7 +2,7 @@
 GHDL = ghdl
 FLAGS = --std=08
 WORKDIR = work
-STOP_TIME = 200us
+STOP_TIME = 20us
 
 # Files
 FILES = uart_tx.vhd uart_rx.vhd uart_tb.vhd
